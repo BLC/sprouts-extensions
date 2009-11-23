@@ -4,17 +4,6 @@ sprout 'as3'
 # enable github as a source
 Sprout::Sprout.gem_sources += ['http://gems.github.com']
 
-Sprout::Sprout.class_eval do
-  # overriding this to allow sprout to be anywhere in the name, supporting github style aliases
-  # ie (jerryvos-sprout-flexsystemsdk-tool)
-  def self.sprout_to_gem_name(name)
-    if(!name.match(/sprout-/))
-      name = "sprout-#{name}-bundle"
-    end
-    return name
-  end
-end
-
 Sprout::ToolTask.class_eval do
   # namespace respecting alias for this task.
   # ToolTask is a file_task which generally doesn't respect namespacing.
@@ -26,6 +15,36 @@ Sprout::ToolTask.class_eval do
     task task_alias => name
   end
 end
+
+Sprout::ToolTask.class_eval do
+  def switch_param_type(name, type)
+    original_param = param_hash[name]
+    params.delete original_param
+
+    new_param = create_param(type)
+    new_param.init do |p|
+      p.belongs_to = self
+      p.name = name
+      p.type = type
+      yield p if block_given?
+    end
+
+    param_hash[name] = new_param
+    params << new_param
+  end
+end
+
+Sprout::MXMLCTask.class_eval do
+  def initialize_task_with_fixed_rsls(*args)
+    value = initialize_task_without_fixed_rsls(*args)
+    switch_param_type('runtime_shared_library_path', 'strings')
+    value
+  end
+
+  alias_method :initialize_task_without_fixed_rsls, :initialize_task
+  alias_method :initialize_task, :initialize_task_with_fixed_rsls
+end
+
 
 # make the task a little smarter about how it determines when it needs to rebuild. Normally it bases
 # this on the name of the task, but since these sprout tasks explicitly have an output file, use that
