@@ -4,10 +4,10 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "#{ENV['github'] ? 'jerryvos-' : ''}sprouts-extensions"
+    gem.name = "moneypools-sprouts-extensions"
     gem.summary = %Q{Some extensions to sprout}
     gem.email = "jerry.vos@gmail.com"
-    gem.homepage = "http://github.com/jerryvos/sprout-extensions"
+    gem.homepage = "http://github.com/moneypools/sprout-extensions"
     gem.authors = ["Richie Vos"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
