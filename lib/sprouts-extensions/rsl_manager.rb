@@ -18,6 +18,7 @@ class RSLManager
   end
 
   def add_output_to_trust_dirs
+    FileUtils.mkdir_p trust_dir
     File.open(File.join(trust_dir, @trust_file_name), 'w') do |file|
       file.puts(File.expand_path(output_dir))
     end
